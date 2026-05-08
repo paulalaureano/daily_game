@@ -8,7 +8,7 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 :root {
-  --orange: #F5A623;
+  --orange: #3B82F6;
   --black: #111111;
   --dark-bg: #1a1a1a;
   --dark-cell: #2c2c2c;
@@ -30,7 +30,7 @@ html,body { height:100%; font-family:var(--font-sans); background:var(--black); 
 .screen.active { display:flex; }
 
 /* ══ HOME ══ */
-#home { background:var(--orange); align-items:center; justify-content:center; padding:2rem 1.5rem; }
+#home { background:#3B82F6; align-items:center; justify-content:center; padding:2rem 1.5rem; }
 
 .home-nav {
   position:absolute; top:0; left:0; right:0;
@@ -54,11 +54,11 @@ html,body { height:100%; font-family:var(--font-sans); background:var(--black); 
 /* Sudoku icon */
 .s-icon { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:3px; width:74px; height:74px; }
 .si-cell { background:var(--white); border:2.5px solid var(--black); display:flex; align-items:center; justify-content:center; font-family:var(--font-serif); font-size:1.5rem; font-weight:700; color:var(--black); }
-.si-cell.empty { background:var(--orange); }
+.si-cell.empty { background:#3B82F6; }
 
 /* Wordle icon */
 .w-icon { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(2,1fr); gap:3px; width:84px; height:54px; }
-.wi-cell { border:2.5px solid var(--black); display:flex; align-items:center; justify-content:center; font-family:var(--font-sans); font-size:0.85rem; font-weight:700; color:var(--black); background:var(--orange); }
+.wi-cell { border:2.5px solid var(--black); display:flex; align-items:center; justify-content:center; font-family:var(--font-sans); font-size:0.85rem; font-weight:700; color:var(--black); background:#3B82F6; }
 .wi-cell.c { background:var(--correct); border-color:var(--correct); color:white; }
 .wi-cell.p { background:var(--present); border-color:var(--present); color:white; }
 .wi-cell.e { background:white; }
@@ -163,6 +163,7 @@ html,body { height:100%; font-family:var(--font-sans); background:var(--black); 
 }
 .nb:active { background:#555; }
 .nb.del { font-family:var(--font-sans); font-size:0.85rem; }
+.nb.nb-done { background:#1a1a1a; color:#333; pointer-events:none; }
 
 /* Win banner */
 .win-banner {
@@ -302,11 +303,7 @@ html,body { height:100%; font-family:var(--font-sans); background:var(--black); 
       <span class="tb-diff" id="tb-diff">Easy</span>
       <span class="tb-timer" id="tb-timer">0:00 ⏸</span>
     </div>
-    <div class="tb-right">
-      <button class="tb-icon">?</button>
-      <button class="tb-icon">⚙</button>
-      <button class="tb-icon">···</button>
-    </div>
+    <div class="tb-right"></div>
   </div>
   <div class="s-wrapper">
     <div class="s-grid" id="s-grid">
@@ -445,6 +442,7 @@ function renderS(){
     c.onclick=()=>{if(!S.done){S.sel=i;renderS();}};
     g.appendChild(c);
   }
+  updateNumPad();
 }
 
 function inputN(n){
@@ -484,8 +482,28 @@ function setMode(m){
 
 function buildNumPad(){
   const n1=document.getElementById('np1');
-  for(let n=1;n<=9;n++){const b=document.createElement('button');b.className='nb';b.textContent=n;const v=n;b.onclick=()=>inputN(v);n1.appendChild(b);}
+  for(let n=1;n<=9;n++){
+    const b=document.createElement('button');
+    b.className='nb';b.textContent=n;b.id=`nb-${n}`;
+    const v=n;b.onclick=()=>inputN(v);
+    n1.appendChild(b);
+  }
   const e=document.createElement('button');e.className='nb del';e.textContent='✕';e.onclick=()=>eraseN();n1.appendChild(e);
+}
+
+function updateNumPad(){
+  // Count how many times each number appears on the board
+  const counts={1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,9:0};
+  S.board.forEach(v=>{if(v>=1&&v<=9)counts[v]++;});
+  for(let n=1;n<=9;n++){
+    const btn=document.getElementById(`nb-${n}`);
+    if(!btn)return;
+    if(counts[n]>=9){
+      btn.classList.add('nb-done');
+    } else {
+      btn.classList.remove('nb-done');
+    }
+  }
 }
 
 // ══════════════ WORDLE ══════════════
