@@ -249,7 +249,7 @@ html,body { height:100%; font-family:var(--font-sans); background:var(--black); 
 .k-key:active { opacity:0.7; }
 .k-key.correct { background:var(--correct); }
 .k-key.present { background:var(--present); }
-.k-key.absent { background:var(--absent); }
+.k-key.absent { background:#1a1a1a; color:#444; border:1px solid #2a2a2a; }
 </style>
 </head>
 <body>
@@ -489,8 +489,30 @@ function buildNumPad(){
 }
 
 // ══════════════ WORDLE ══════════════
-const WORDS=['crane','slate','trace','place','grace','space','price','voice','beach','teach','reach','torch','watch','match','patch','catch','black','slack','track','crack','brick','trick','click','slick','thick','quick','stick','stock','block','clock','brave','crave','grave','drove','grove','stove','clove','swift','drift','shift','blend','spend','trend','stoke','smoke','spoke','broke','stone','phone','drone','groan','blind','bland','brand','grand','stand','plant','grant','slant','chant','brisk','frisk','flask','clasp','grasp','plump','clump','stump','trump','slump','blaze','graze','craze','phase','chase','lease','candy','carry','cause','chain','chair','chaos','chess','chest','chief','child','choir','close','cloud','coast','count','cover','crane','crazy','cream','creek','crime','cross','crowd','cruel','crush','curve','dance','death','delay','depth','devil','dirty','doubt','draft','drain','drama','dream','dress','drink','drive','eager','early','earth','eight','empty','enemy','enjoy','enter','equal','error','essay','event','exact','exist','extra','fairy','faith','fancy','feast','fence','fever','field','fifth','fifty','fight','final','first','fixed','flame','fleet','floor','flora','focus','force','forth','forum','found','frame','fresh','frost','fully','funny','giant','given','glass','globe','gloom','glove','grain','graph','grasp','green','grief','group','grove','happy','heart','heavy','horse','hotel','house','human','humor','hurry','image','issue','judge','karma','knife','known','labor','later','laugh','layer','learn','legal','level','light','limit','liver','local','logic','lower','loyal','lucky','magic','major','maple','march','medal','media','might','model','money','moral','motor','motto','mount','mouse','movie','music','named','never','night','noble','noise','north','novel','nurse','ocean','offer','often','olive','order','outer','owner','paint','panel','paper','party','pasta','peace','pearl','penny','phase','photo','piano','pixel','pizza','plain','plank','poker','pound','power','press','pride','prime','prior','prize','prone','proof','prose','proud','proxy','pulse','punch','queen','query','quick','quiet','quota','quote','radar','radio','raise','range','rapid','ready','realm','rebel','refer','reign','relax','rider','right','rigid','rival','river','rocky','rouge','rough','round','route','royal','ruler','saint','sauce','scale','scene','scope','score','scout','sense','serve','shall','shame','shape','sharp','sheep','shelf','shift','shoot','shore','siege','since','sixth','sixty','skill','sleep','slide','slope','small','smart','smile','smoke','solar','solid','solve','sorry','south','speak','speed','spend','spike','spite','spoke','spoon','spray','squad','squat','stack','staff','stage','stain','stamp','stand','stark','start','state','steam','steep','steer','stern','still','sting','story','strap','stray','strip','stuck','study','stuff','style','sugar','suite','sunny','super','swear','sweep','sweet','swift','swirl','sword','table','taste','teach','tempo','tense','tenth','thorn','those','three','throw','tiger','tight','tired','title','today','token','torch','total','tough','toxic','trade','train','trait','tramp','tread','treat','trial','tribe','tried','trust','tumor','twist','under','unity','until','upper','using','usual','utter','valid','value','vapor','verse','video','vigor','viral','visit','vital','vivid','vocal','voice','voter','waste','water','weird','whale','wheat','where','which','while','white','whole','whose','witty','women','world','worry','worse','worst','worth','would','wound','wrist','wrote','young','yours','youth','zebra'].filter((w,i,a)=>w.length===5&&a.indexOf(w)===i);
-const VALID=new Set([...WORDS,'about','above','abuse','actor','acute','admit','adopt','adult','after','again','agent','agree','ahead','alarm','album','alert','alike','align','alive','alley','allow','alone','along','aloud','alter','angel','anger','angle','angry','ankle','annex','apart','apple','apply','apron','argue','arise','aroma','aside','asset','atlas','attic','audio','audit','avail','avoid','award','aware','badly','basic','basis','beard','beast','began','begin','being','below','bench','bible','birds','birth','blade','blame','blast','bleed','bless','blood','bloom','blown','bonus','boost','booth','bound','brain','brake','bride','brief','bring','broad','brook','brown','build','built','bunch','burst','buyer','cabin','camel','cargo','civil','claim','clean','clear','clerk','climb','cobra','comet','comic','comma','coral','could','court','cramp','creep','elect','ended','fluid','flute','fable','fatal','fiber','filed','freed','front','fryer','going','guard','guess','guide','guild','guise','gusto','herbs','heron','hired','honor','hyena','ideal','imply','inbox','index','indie','infer','inner','input','intel','inter','intro','ivory','jelly','jewel','jiffy','joint','joker','joust','juicy','juror','kayak','keeps','khaki','knack','knobs','knock','knurl','laser','least','linen','lotus','lucid','lying','lyric','manor','minor','minus','naive','nasal','naval','nerdy','newer','nymph','onion','onset','opera','ought','oxide','ozone','plaid','pleas','plied','plier','pluck','plume','pluto','poppy','posse','privy','psalm','rabbi','rainy','rally','ratio','recap','renal','renew','repay','reset','resin','retro','risky','robyn','rogue','rover','rumor','rural','rusty','sadly','seize','sewer','shady','shirt','sized','sleek','spice','spied','spill','steed','breed','shore','adore','store','glare','spare','stare','share','snare','flare','aware','their','chair','flair','stair','trail','grail','snail','frail','email','nerve','serve','curve','gorge','large','barge','forge','merge','purge','radish','relish','fetish','polish','vanish','banish','lavish','ravish']);
+// Answer pool (curated words - what can be the SECRET word)
+const WORDS=['crane','slate','trace','place','grace','space','price','voice','beach','teach','reach','torch','watch','match','patch','catch','black','slack','track','crack','brick','trick','click','slick','thick','quick','stick','stock','block','clock','brave','crave','grave','drove','grove','stove','clove','swift','drift','shift','blend','spend','trend','stoke','smoke','spoke','broke','stone','phone','drone','groan','blind','bland','brand','grand','stand','plant','grant','slant','chant','brisk','frisk','flask','clasp','grasp','plump','clump','stump','slump','blaze','graze','craze','phase','chase','lease','candy','carry','cause','chain','chair','chaos','chess','chest','chief','child','choir','close','cloud','coast','count','cover','crazy','cream','creek','crime','cross','crowd','cruel','crush','curve','dance','death','delay','depth','devil','dirty','doubt','draft','drain','drama','dream','dress','drink','drive','eager','early','earth','eight','empty','enemy','enjoy','enter','equal','error','essay','event','exact','exist','extra','fairy','faith','fancy','feast','fence','fever','field','fifth','fifty','fight','final','first','fixed','flame','fleet','floor','flora','focus','force','forth','forum','found','frame','fresh','frost','fully','funny','giant','given','glass','globe','gloom','glove','grain','graph','green','grief','group','grove','happy','heart','heavy','horse','hotel','house','human','humor','hurry','image','issue','judge','karma','knife','known','labor','later','laugh','layer','learn','legal','level','light','limit','liver','local','logic','lower','loyal','lucky','magic','major','maple','march','medal','media','might','model','money','moral','motor','motto','mount','mouse','movie','music','named','never','night','noble','noise','north','novel','nurse','ocean','offer','often','olive','order','outer','owner','paint','panel','paper','party','pasta','peace','pearl','penny','photo','piano','plain','plank','poker','pound','power','press','pride','prime','prior','prize','prone','proof','prose','proud','proxy','pulse','punch','queen','query','quiet','quota','radar','radio','raise','range','rapid','ready','realm','rebel','refer','reign','relax','rider','right','rigid','rival','river','rocky','rouge','rough','round','route','royal','ruler','saint','sauce','scale','scene','scope','score','scout','sense','serve','shall','shame','shape','sharp','sheep','shelf','shift','shoot','shore','siege','since','sixth','sixty','skill','sleep','slide','slope','small','smart','smile','smoke','solar','solid','solve','sorry','south','speak','speed','spend','spike','spite','spoke','spoon','spray','squad','squat','stack','staff','stage','stain','stamp','stand','stark','start','state','steam','steep','steer','stern','still','sting','story','strap','stray','strip','stuck','study','stuff','style','sugar','suite','sunny','super','swear','sweep','sweet','swift','swirl','sword','table','taste','teach','tempo','tense','tenth','thorn','those','three','throw','tiger','tight','tired','title','today','token','torch','total','tough','toxic','trade','train','trait','tramp','tread','treat','trial','tribe','tried','trust','tumor','twist','under','unity','until','upper','using','usual','utter','valid','value','vapor','verse','video','vigor','viral','visit','vital','vivid','vocal','voice','voter','waste','water','weird','whale','wheat','where','which','while','white','whole','whose','witty','women','world','worry','worse','worst','worth','would','wound','wrist','wrote','young','yours','youth','zebra'].filter((w,i,a)=>w.length===5&&a.indexOf(w)===i);
+
+// Valid word list - loaded from words.txt
+let VALID = new Set(WORDS); // fallback until file loads
+let wordListReady = false;
+
+fetch('words.txt')
+  .then(r => r.text())
+  .then(txt => {
+    txt.split('\n').forEach(w => {
+      w = w.trim().toLowerCase();
+      // Skip comments, empty lines, and non-5-letter words
+      if (w.startsWith('#') || w === '') return;
+      if (w.length === 5 && /^[a-z]+$/.test(w)) VALID.add(w);
+    });
+    wordListReady = true;
+    console.log('Word list loaded:', VALID.size, 'words');
+  })
+  .catch(() => {
+    console.warn('words.txt not found, using built-in list');
+    wordListReady = true;
+  });
+
 
 const W={answer:'',board:[],row:0,col:0,over:false,streak:0,wins:0,played:0,keys:{}};
 
@@ -498,7 +520,7 @@ function startWordle(){initWordle();showScreen('wordle');}
 
 function initWordle(){
   W.answer=WORDS[Math.floor(Math.random()*WORDS.length)];
-  W.board=Array(6).fill(null).map(()=>Array(5).fill({l:'',s:''}));
+  W.board=Array(6).fill(null).map(()=>Array(5).fill(null).map(()=>({l:'',s:''})));
   W.row=0;W.col=0;W.over=false;W.keys={};
   setMsg('Start typing!','');
   renderWBoard();renderKB();
@@ -578,7 +600,10 @@ function submitW(){
       t.classList.add(res[c],'flip');
       W.board[W.row][c]={l:g[c],s:res[c]};
       const cur=W.keys[g[c]];
-      if(!cur||cur==='absent'||(cur==='present'&&res[c]==='correct'))W.keys[g[c]]=res[c];
+      // Never downgrade: correct stays correct, present stays present unless upgraded
+      if(!cur) W.keys[g[c]]=res[c];
+      else if(cur==='absent'&&res[c]!=='absent') W.keys[g[c]]=res[c];
+      else if(cur==='present'&&res[c]==='correct') W.keys[g[c]]=res[c];
     },c*130);
   }
   setTimeout(()=>{
