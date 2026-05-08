@@ -1581,6 +1581,7 @@ geode
 geted
 geter
 getly
+ghost
 ghoul
 giddy
 gilds
